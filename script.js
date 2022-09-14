@@ -6,24 +6,26 @@ let iconfile;
 const searchInput=document.getElementById("search-input");
 const searchButton=document.getElementById("search-button");
 
+// Stop Browser Refresh
 searchButton.addEventListener('click', (e)=>
 {
 
 e.preventDefault();
-getWeather(searchInput.value);
+getWeather(searchInput.value);// Function someone click on function call this function.
 searchInput.value='';
 
 
 });
 
-
+//------------------------------ CODE FOR ALL CITIES---------------------------------------
 
 const getWeather=async (city)=>
 {
+// for wrong input use try and catch method.
     try{
 
         const response= await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=dab3af44de7d24ae7ff86549334e45bd`,
-   
+            // Instead of cors locally use https:// and mode:'Cors'
             {mode: 'cors'}
         );
 
@@ -32,9 +34,12 @@ const getWeather=async (city)=>
         const{name}=weatherData;
         const{feels_like}=weatherData.main;
         const{id,main}=weatherData.weather[0];
+        
         loc.textContent=name;
         climate.textContent=main;
         tempvalue.textContent=Math.round(feels_like-273);
+      //-----------------------------------------------------------------------------  
+        // Weather condition codes.
         if(id<300 && id>200)
         {
             tempicon.src="./icons/thunderstorm.svg"
@@ -69,14 +74,18 @@ catch(error)
 
 
 
+//--------------------------------------CODE FOR CURRENT LOCATION.--------------------------------------------
+// Longitude and Latitude
+
 window.addEventListener("load" ,()=>{
 
 let long;
 let lat;
 
+// Allow the Location.
 if(navigator.geolocation)
 {
-
+    // current location.
     navigator.geolocation.getCurrentPosition((position)=>
     {
 
@@ -84,12 +93,17 @@ if(navigator.geolocation)
     
     long=position.coords.longitude;
     lat=position.coords.latitude;
+    
+    // Create the local server. 
     const proxy="https://cors-anywhere.herokuapp.com/";
-
+            
+        // Store the Api.  
+        // Cordinate API From geolocation co-ordinate
         const api=`${proxy}api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=dab3af44de7d24ae7ff86549334e45bd     `
 
         fetch(api).then((response)=>{
-
+                
+                
             return response.json();
 
 
@@ -97,15 +111,17 @@ if(navigator.geolocation)
 
         .then (data =>
             {
-
+                    // JSON to Normal Javascript
                     const{name}=data;
                     const{feels_like}=data.main;
                     const{id,main}=data.weather[0];
 
-
+                    // Current Data 
                     loc.textContent=name;
                     climate.textContent=main;
-                    tempvalue.textContent=Math.round(feels_like-273);
+                    tempvalue.textContent=Math.round(feels_like-273);// Temp in kelvin.
+                    
+                     // Weather condition codes.
                     if(id<300 && id>200)
                     {
                         tempicon.src="./icons/thunderstorm.svg"
